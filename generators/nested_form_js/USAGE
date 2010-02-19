@@ -1,0 +1,8 @@
+Description:
+    Generate some JS for nested forms
+
+Example:
+    `./script/generate nested_form_js`
+
+        This will create:
+            JS: public/javascripts/nested_form.js

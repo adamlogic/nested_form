@@ -1,17 +1,13 @@
-path = "public/javascripts/nested_form.js"
-puts "Generating #{path}"
-File.open("#{Rails.root}/#{path}", "w") do |file|
-  file.print <<-EOS
-$(function() {
-  $('form a.add_nested_fields').live('click', function() {
+jQuery(function() {
+  jQuery('form a.add_nested_fields').live('click', function() {
     // Setup
-    var assoc   = $(this).attr('data-association');           // Name of child
-    var content = $('#' + assoc + '_fields_blueprint').html(); // Fields template
-    
+    var assoc   = jQuery(this).attr('data-association');           // Name of child
+    var content = jQuery('#' + assoc + '_fields_blueprint').html(); // Fields template
+
     // Make the context correct by replacing new_<parents> with the generated ID
     // of each of the parent objects
-    var context = ($(this).parents('.fields').children('input:first').attr('name') || '').replace(new RegExp('\[[a-z]+\]$'), '');
-    
+    var context = (jQuery(this).parents('.fields').children('input:first').attr('name') || '').replace(new RegExp('\[[a-z]+\]$'), '');
+
     // context will be something like this for a brand new form:
     // project[tasks_attributes][1255929127459][assignments_attributes][1255929128105]
     // or for an edit form:
@@ -19,7 +15,7 @@ $(function() {
     if(context) {
       var parent_names = context.match(/[a-z]+_attributes/g) || []
       var parent_ids   = context.match(/[0-9]+/g)
-      
+
       for(i = 0; i < parent_names.length; i++) {
         if(parent_ids[i]) {
           content = content.replace(
@@ -29,24 +25,22 @@ $(function() {
         }
       }
     }
-    
+
     // Make a unique ID for the new child
     var regexp  = new RegExp('new_' + assoc, 'g');
     var new_id  = new Date().getTime();
     content     = content.replace(regexp, new_id)
-    
-    $(this).parent().before(content);
+
+    jQuery(this).parent().before(content);
     return false;
   });
-  
-  $('form a.remove_nested_fields').live('click', function() {
-    var hidden_field = $(this).prev('input[type=hidden]')[0];
+
+  jQuery('form a.remove_nested_fields').live('click', function() {
+    var hidden_field = jQuery(this).prev('input[type=hidden]')[0];
     if(hidden_field) {
       hidden_field.value = '1';
     }
-    $(this).closest('.fields').hide();
+    jQuery(this).closest('.fields').hide();
     return false;
   });
 });
-EOS
-end
