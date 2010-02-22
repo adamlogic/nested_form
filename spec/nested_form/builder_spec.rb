@@ -33,6 +33,22 @@ describe NestedForm::Builder do
       @template.output_buffer.should == '<div class="fields">Task</div><div class="fields">Task</div>'
     end
 
+    it "should not wrap nested fields with :wrap => false" do
+      2.times { @project.tasks.build }
+      @builder.fields_for(:tasks, :wrap => false) do
+        @template.concat("Task")
+      end
+      @template.output_buffer.should == 'TaskTask'
+    end
+
+    it "should accept custom wrappers" do
+      2.times { @project.tasks.build }
+      @builder.fields_for(:tasks, :prepend => '<p>', :append => '</p>') do
+        @template.concat("Task")
+      end
+      @template.output_buffer.should == '<p>Task</p><p>Task</p>'
+    end
+
     it "should add task fields to hidden div after form" do
       @template.stub(:after_nested_form) { |block| block.call }
       @builder.fields_for(:tasks) { @template.concat("Task") }

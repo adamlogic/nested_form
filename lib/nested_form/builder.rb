@@ -13,10 +13,11 @@ module NestedForm
         name = name_or_association
       end
       @fields ||= {}
+      @fields[association] ||= {}
       @template.after_nested_form do
         model_object = object.class.reflect_on_association(association).klass.new
         @template.concat(%Q[<div id="#{association}_fields_blueprint" style="display: none">])
-        fields_for(association, model_object, :child_index => "new_#{association}", &@fields[association])
+        fields_for(association, model_object, :child_index => "new_#{association}", &@fields[association][:block])
         @template.concat('</div>')
       end
       @template.link_to(name, "#", :class => "add_nested_fields", "data-association" => association)
@@ -33,15 +34,30 @@ module NestedForm
 
     def fields_for_with_nested_attributes(association, args, block)
       @fields ||= {}
-      @fields[association] = block
+      opts = args.last.is_a?(Hash) ? args.last : {}
+      wrap = opts.delete(:wrap)
+      wrap = true if wrap.nil?
+
+      @fields[association] = {
+        :wrap => wrap,
+        :prepend => opts.delete(:prepend) || '<div class="fields">',
+        :append => opts.delete(:append) || '</div>',
+        :block => block
+      }
+      if args.last.is_a?(Hash)
+        args.last[:nested_form_association] = association
+      else
+        args << {:nested_form_association => association}
+      end
       super
     end
 
-
     def fields_for_nested_model(name, association, args, block)
-      @template.concat('<div class="fields">')
+      options = @fields[args.last[:nested_form_association]];
+
+      @template.concat(options[:prepend]) if options[:wrap]
       super
-      @template.concat('</div>')
+      @template.concat(options[:append]) if options[:wrap]
     end
   end
 end
