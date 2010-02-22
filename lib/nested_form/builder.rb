@@ -1,6 +1,17 @@
 module NestedForm
   class Builder < ActionView::Helpers::FormBuilder
-    def link_to_add(name, association)
+    # Creates a link tag for adding fields for a new nested item.
+    #
+    # @param name [optional String] Text for the link. Default is "Add a [singular association name]".
+    # @param association [Symbol] Name of association to add nested fields for.
+    # @return [String] Generated link HTML.
+    def link_to_add(name_or_association, association = nil)
+      if name_or_association.is_a? Symbol
+        association = name_or_association
+        name = "Add a #{association.to_s.singularize.humanize.downcase}"
+      else
+        name = name_or_association
+      end
       @fields ||= {}
       @template.after_nested_form do
         model_object = object.class.reflect_on_association(association).klass.new
@@ -11,7 +22,12 @@ module NestedForm
       @template.link_to(name, "#", :class => "add_nested_fields", "data-association" => association)
     end
 
-    def link_to_remove(name)
+    # Creates a link for removing nested fields.
+    #
+    # @param [optional String] Text for the link. Defauld is "Remove".
+    # @return [String] Generated link HTML.
+    def link_to_remove(name = nil)
+      name = "Remove" if name.nil?
       hidden_field(:_destroy) + @template.link_to(name, "#", :class => "remove_nested_fields")
     end
 
