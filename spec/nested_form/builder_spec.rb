@@ -18,11 +18,11 @@ describe NestedForm::Builder do
     end
 
     it "should have a remove link" do
-      @builder.link_to_remove("Remove").should == '<input id="item__destroy" name="item[_destroy]" type="hidden" /><a href="#" class="remove_nested_fields">Remove</a>'
+      @builder.link_to_remove("Remove").should == '<input id="item__destroy" name="item[_destroy]" type="hidden" value="0" /><a href="#" class="remove_nested_fields">Remove</a>'
     end
 
     it "should have a remove link with default name" do
-      @builder.link_to_remove.should == '<input id="item__destroy" name="item[_destroy]" type="hidden" /><a href="#" class="remove_nested_fields">Remove</a>'
+      @builder.link_to_remove.should == '<input id="item__destroy" name="item[_destroy]" type="hidden" value="0" /><a href="#" class="remove_nested_fields">Remove</a>'
     end
 
     it "should wrap nested fields each in a div with class" do

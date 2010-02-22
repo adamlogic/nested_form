@@ -28,7 +28,7 @@ module NestedForm
     # @return [String] Generated link HTML.
     def link_to_remove(name = nil)
       name = "Remove" if name.nil?
-      hidden_field(:_destroy) + @template.link_to(name, "#", :class => "remove_nested_fields")
+      hidden_field(:_destroy, :value => 0) + @template.link_to(name, "#", :class => "remove_nested_fields")
     end
 
     def fields_for_with_nested_attributes(association, args, block)
