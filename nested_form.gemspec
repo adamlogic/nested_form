@@ -5,7 +5,7 @@ require "base64"
 
 Gem::Specification.new do |s|
   s.name = "nested_form"
-  s.version = "0.1.1"
+  s.version = "0.2.0"
   s.authors = ["Ryan Bates", "Alexander Mankuta"]
   s.homepage = "http://github.com/cheba/nested_forms"
   s.summary = "Rails plugin to conveniently handle multiple models in a single form"
