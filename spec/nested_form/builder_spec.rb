@@ -55,5 +55,17 @@ describe NestedForm::Builder do
       @builder.link_to_add("Add", :tasks)
       @template.output_buffer.should == '<div id="tasks_fields_blueprint" style="display: none"><div class="fields">Task</div></div>'
     end
+
+    it "should accept procs for wrappers" do
+      @project.tasks.build :name => 'task1'
+      @project.tasks.build :name => 'task2'
+
+      @builder.fields_for(:tasks,
+                          :prepend => proc{|t| "<div class=\"#{t.name}\">"},
+                          :append => proc{|t| "</div><p>#{t.name}!</p>"}) do
+        @template.concat("Task")
+      end
+      @template.output_buffer.should == '<div class="task1">Task</div><p>task1!</p><div class="task2">Task</div><p>task2!</p>'
+    end
   end
 end

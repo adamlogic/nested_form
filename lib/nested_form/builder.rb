@@ -55,9 +55,23 @@ module NestedForm
     def fields_for_nested_model(name, association, args, block)
       options = @fields[args.last[:nested_form_association]];
 
-      @template.concat(options[:prepend]) if options[:wrap]
+      if options[:wrap]
+        if options[:prepend].respond_to? :call
+          prepend = options[:prepend].call(association)
+        else
+          prepend = options[:prepend]
+        end
+        @template.concat(prepend)
+      end
       super
-      @template.concat(options[:append]) if options[:wrap]
+      if options[:wrap]
+        if options[:append].respond_to? :call
+          append = options[:append].call(association)
+        else
+          append = options[:append]
+        end
+        @template.concat(append)
+      end
     end
   end
 end
